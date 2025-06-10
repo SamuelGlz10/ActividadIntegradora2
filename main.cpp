@@ -1,14 +1,18 @@
 #include <iostream>
-#include "kruskal.h"
+#include "Kruskal.h"
+#include "TravelingSalesman.h"
+#include "FordFulkerson.h"
+#include "LinealSearch.h"
 using namespace std;
 
 
 int main() {
-    vector<vector<int>> edges = {
-        {0, 1, 10}, {1, 3, 15}, {2, 3, 4}, {2, 0, 6}, {0, 3, 5}
-    };
-    
-    cout<<kruskalsMST(4, edges);
-    
+    vector<int> arr = {2, 3, 4, 10, 40};
+    int x = 10;
+    int res = search(arr, x);
+    if (res == -1)
+       cout << "Not Present";
+    else
+       cout << "Present at Index " << res;
     return 0;
 }   
