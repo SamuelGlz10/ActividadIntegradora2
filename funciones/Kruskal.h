@@ -1,10 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Disjoint set data struture
+// Estructura de conjuntos disjuntos (Union-Find)
 class DSU {
     vector<int> parent, rank;
-
 public:
     DSU(int n) {
         parent.resize(n);
@@ -14,11 +13,11 @@ public:
             rank[i] = 1;
         }
     }
-
+    // Encuentra el representante del conjunto de i
     int find(int i) {
         return (parent[i] == i) ? i : (parent[i] = find(parent[i]));
     }
-
+    // Une dos conjuntos
     void unite(int x, int y) {
         int s1 = find(x), s2 = find(y);
         if (s1 != s2) {
@@ -28,23 +27,18 @@ public:
         }
     }
 };
-bool comparator(vector<int> &a,vector<int> &b){
-    if(a[2]<=b[2])return true;
-    return false;
+// Comparador para ordenar aristas por peso
+inline bool comparator(vector<int> &a,vector<int> &b){
+    return a[2] < b[2];
 }
+
+// Algoritmo de Kruskal para encontrar el árbol de expansión mínima
 int kruskalsMST(int V, vector<vector<int>> &edges) {
-    
-    // Sort all edhes
     sort(edges.begin(), edges.end(),comparator);
-    
-    // Traverse edges in sorted order
     DSU dsu(V);
     int cost = 0, count = 0;
-    
     for (auto &e : edges) {
         int x = e[0], y = e[1], w = e[2];
-        
-        // Make sure that there is no cycle
         if (dsu.find(x) != dsu.find(y)) {
             dsu.unite(x, y);
             cost += w;
