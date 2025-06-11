@@ -17,7 +17,7 @@ string idxToColony(int idx) {
 int main() {
     int N;
     cin >> N;
-
+    
     // Leer matriz de distancias
     vector<vector<int>> dist(N, vector<int>(N));
     for (int i = 0; i < N; ++i)
@@ -31,18 +31,21 @@ int main() {
             cin >> cap[i][j];
 
     // Leer ubicaciones de centrales en formato (x,y)
-    vector<pair<int, int>> centrales(N);
+    vector<pair<int, int>> centrales;
     string line;
-    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Limpiar todo el buffer hasta el siguiente salto de línea real
-    for (int i = 0; i < N; ++i) {
-        do {
-            getline(cin, line);
-        } while (line.empty());
-        int x, y;
-        char p1, comma, p2;
-        istringstream iss(line);
-        iss >> p1 >> x >> comma >> y >> p2;
-        centrales[i] = {x, y};
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    int puntos_leidos = 0;
+    int total_puntos = N + 1; // N centrales + 1 punto de consulta
+    while (puntos_leidos < total_puntos && getline(cin, line)) {
+        if (line.empty()) continue;
+        if (line[0] == '(') {
+            int x, y;
+            char p1, comma, p2;
+            istringstream iss(line);
+            iss >> p1 >> x >> comma >> y >> p2;
+            centrales.push_back({x, y});
+            puntos_leidos++;
+        }
     }
 
     // 1. Kruskal: obtener aristas del MST
@@ -119,14 +122,20 @@ int main() {
     cout << "3." << endl;
     cout << maxflow << endl;
 
-    // 4. Central más al este (mayor x)
-    int idx_max_x = 0;
+    // 4. Central más cercana al punto de consulta (último leído)
+    int px = centrales.back().first;
+    int py = centrales.back().second;
+    int idx_min = 0;
+    double min_dist = hypot(centrales[0].first - px, centrales[0].second - py);
     for (int i = 1; i < N; ++i) {
-        if (centrales[i].first > centrales[idx_max_x].first)
-            idx_max_x = i;
+        double d = hypot(centrales[i].first - px, centrales[i].second - py);
+        if (d < min_dist) {
+            min_dist = d;
+            idx_min = i;
+        }
     }
     cout << "4." << endl;
-    cout << "(" << centrales[idx_max_x].first << ", " << centrales[idx_max_x].second << ")" << endl;
+    cout << "(" << centrales[idx_min].first << ", " << centrales[idx_min].second << ")" << endl;
 
     return 0;
 }
